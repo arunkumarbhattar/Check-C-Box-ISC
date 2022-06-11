@@ -1,0 +1,4 @@
+/home/arun/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib.dir
+/home/arun/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib_final.dir
+/home/arun/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/arun/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/rebuild_cache.dir

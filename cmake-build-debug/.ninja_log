@@ -1,0 +1,5 @@
+# ninja log v5
+0	23	1654926838034404224	CMakeFiles/img_lib.dir/unsafe_code_goes_in_here/lib.c.o	1f3d4b3fa89490ce
+23	27	1654926838038404254	libimg_lib.a	383382b3f5accb3a
+0	24	1654926911270933691	CMakeFiles/isc_lib.dir/unsafe_code_goes_in_here/lib.c.o	37aa5fb11c262489
+24	30	1654926911278933748	libisc_lib.a	e4b69297ff9f4116
