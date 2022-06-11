@@ -10,7 +10,7 @@
 ### Step 1 DEFINE \_TAINTED functions
 
 * Functions that are marked \_Tainted must be defined here.
-* Functions whose callers are tainted are also inferred to be \_Tainted. 
+* \[As of Now\] Functions whose callers are tainted are also inferred to be \_Tainted. 
 * Hence, even they must be defined here
 
 ### Step 2 COMPILE \_TAINTED functions
@@ -42,38 +42,3 @@ mv lib.ll ../llvmlinker/
 ```
 mv lib_wasm.c lib_wasm.h ../wasm_readable_definitions/
 ```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
-
-## Authors
-
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
