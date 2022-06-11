@@ -1,0 +1,14 @@
+# ninja log v5
+0	23	1654926838034404224	CMakeFiles/img_lib.dir/unsafe_code_goes_in_here/lib.c.o	1f3d4b3fa89490ce
+23	27	1654926838038404254	libimg_lib.a	383382b3f5accb3a
+0	24	1654926911270933691	CMakeFiles/isc_lib.dir/unsafe_code_goes_in_here/lib.c.o	37aa5fb11c262489
+24	30	1654926911278933748	libisc_lib.a	e4b69297ff9f4116
+0	21	1654926973967383370	CMakeFiles/isc_lib.dir/unsafe_code_goes_in_here/lib.c.o	37aa5fb11c262489
+21	25	1654926973971383399	libisc_lib.a	e4b69297ff9f4116
+0	11	1654926977407407956	CMakeFiles/isc_lib_final.dir/wasmrt/wasm-rt-os-win.c.o	7b4a2a773eba863b
+0	36	1654927049211919235	CMakeFiles/isc_lib_final.dir/wasmrt/wasm-rt-os-unix.c.o	bb2de36a8292fe3d
+1	551	1654927049727922897	CMakeFiles/isc_lib_final.dir/wasm_readable_definitions/lib_wasm.c.o	d5fb0dd54e50b5b3
+1	26	1654927074476098325	CMakeFiles/isc_lib_final.dir/wasmrt/wasm-rt-runner.c.o	4bae8312e0e7d14c
+1	37	1654927074488098411	CMakeFiles/isc_lib_final.dir/wasmrt/wasm-rt-impl.c.o	eace6650d1c1d72d
+1	113	1654927081940151160	CMakeFiles/isc_lib_final.dir/wasmrt/wasm-rt-wasi.c.o	436e5e7ff19d7b73
+113	123	1654927081952151246	libisc_lib_final.a	4abb1a53d883e629

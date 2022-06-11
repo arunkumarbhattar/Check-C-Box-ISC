@@ -68,8 +68,7 @@ t = *(ptr + i);
 }
 printf("\n");
 // print the numbers
-for (size_t i = 0; i < n; i++)
-	printf("Printing the number %d \n", ptr[i]);
+    for (size_t i = 0; i < n; i++) { printf("Printing the number %d \n", ptr[i]); }
 
 return ptr;
 
