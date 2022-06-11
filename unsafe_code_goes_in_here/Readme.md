@@ -29,51 +29,14 @@ wasm2c -o lib_wasm.c lib.wasm
 ```
 * This will generate for you lib_wasm.c and lib_wasm.h
 
-### Step 4 Generate LLVM .LL IR files for a.) lib.c and b.) lib_wasm.c 
-* Execute
-```
-clang-12 -S -emit-llvm lib.c -o lib.ll
-```
-### Step 5 Move these lib.ll to llvmlinker directory where we will link with other libraries into a single module
-```
-mv lib.ll ../llvmlinker/
-```
-### Final Step 6 Move lib_wasm.c, lib_wasm.h to wasm_readable_definitions directory where we will link with other libraries into a single module
+### Step 4 Move lib_wasm.c, lib_wasm.h to wasm_readable_definitions directory where we will link with other libraries into a single module
 ```
 mv lib_wasm.c lib_wasm.h ../wasm_readable_definitions/
 ```
-
-## Help
-
-Any advise for common problems or issues.
+### Step 5 Generate the cmake build files and build target library
 ```
-command to run if program contains helper info
+cd ..
+cmake -S . -B ./build
+cmake --build ./build --parallel
 ```
-
-## Authors
-
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+### add the generated static library isc_lib_final.a to your SSC compilation linker
