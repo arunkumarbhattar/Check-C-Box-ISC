@@ -49,10 +49,30 @@ void parse_image_body(char* in, ImageHeader* header, char* out) {
     memset(out, 213, header->width * header->height);
 }
 
-int* tainted_sort (int n,int* ptr)
+struct twin_turbo{
+    int turbo_1;
+    int turbo_2;
+    char* engine;
+};
+
+void* adder(int a, int b)
+{
+    int *temp = (int*) malloc(1*sizeof(int));
+            *temp = a + b;
+    return (void*)temp;
+}
+
+void* perform_action(void* (*operation)(int ,int), int a, int b){
+    return operation(a,b);
+}
+
+int tainted_sort (int n, int* ptr, struct twin_turbo *tb)
 {
 int i, j, t;
 int ret = 0;
+
+int *wret = perform_action(adder, tb.turbo_2,tb.turbo_1);
+return *wret;
 // Sort the numbers using pointers
 for (i = 0; i < n; i++)  {
 
@@ -68,9 +88,23 @@ t = *(ptr + i);
 }
 printf("\n");
 // print the numbers
-    for (size_t i = 0; i < n; i++) { printf("Printing the number %d \n", ptr[i]); }
+    for (size_t i = 0; i < n; i++) {
+        printf("Printing the number %d \n", *(ptr + i));
+    }
 
-return ptr;
+//    tb.turbo_1 = 92835;
+//    tb.turbo_2 = 29374;
+//    tb.engine = (char*)malloc(10*sizeof(char));
+//    tb.engine = "2jz supra";
+
+//
+//    tb1->turbo_1 = adder(10,20);
+//    tb1->turbo_2 = adder(20,30);
+//    tb1->engine = (char*)malloc(10*sizeof(char));
+//    tb1->engine = "2jz supra";
+
+return *ptr;
 
 return 0;
 }
+
