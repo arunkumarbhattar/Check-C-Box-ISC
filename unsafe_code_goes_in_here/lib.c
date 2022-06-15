@@ -66,7 +66,11 @@ void* perform_action(void* (*operation)(int ,int), int a, int b){
     return operation(a,b);
 }
 
-int tainted_sort (int n, int* ptr, struct twin_turbo *tb)
+void* (*function_ptr_1)(int* ,int*);
+
+int* (*function_ptr_2)(char*, struct twin_turbo *tb);
+
+int tainted_sort (int n, int* ptr, struct twin_turbo tb)
 {
 int i, j, t;
 int ret = 0;
