@@ -50,7 +50,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/arun/Desktop/Check-C-Box-ISC"
+					"path" : "/home/twinturbo/Desktop/Check-C-Box-ISC"
 				}
 			],
 			"language" : "C",
@@ -83,7 +83,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "unsafe_code_goes_in_here/lib.c",
+			"path" : "unsafe_code_goes_in_here/Taintedparson.c",
 			"sourceGroupIndex" : 0
 		}
 	],
