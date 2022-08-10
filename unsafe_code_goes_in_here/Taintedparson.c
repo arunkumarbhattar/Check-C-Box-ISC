@@ -80,7 +80,7 @@ struct json_array_t_t {
     return NULL;
   char * p  = (char *)malloc(sz + 1);
   if (p != NULL)
-    p[sz] = 0;
+    p[sz] = '\0';
   return (char *)p;
 }
 
@@ -588,7 +588,10 @@ char * processed) {
 
 char * get_quoted_string(const char * string,
 char * (*process_string)(const char * input,size_t len)) {
-    const char * string_start = string;
+    
+    // This way, string_start wont get modified it string_start gets
+    const char * string_start = malloc(strlen(string)*sizeof(char));
+    strncpy(string_start, string, strlen(string_start));
 
     size_t string_len = 0;
     /*
@@ -598,7 +601,7 @@ char * (*process_string)(const char * input,size_t len)) {
     if (status != JSONSuccess) {
         return NULL;
     }
-    string_len = string - string_start - 2; /* length without quotes */
+    string_len = strlen(string) - strlen(string_start) - 2; /* length without quotes */
     // TODO: We can't figure this out dynamically
     const char * one_past_start  = NULL;
      {
@@ -1079,7 +1082,7 @@ return json_value_get_type_tainted(value) == JSONObject ? value->value.object : 
         return NULL;
     }
     new_value->parent = NULL;
-    new_value->type = JSONArray;
+    new_value->type = 6;
     new_value->value.array = json_array_init(new_value);
     if (!new_value->value.array) {
         parson_tainted_free(TJSON_Value, new_value);
