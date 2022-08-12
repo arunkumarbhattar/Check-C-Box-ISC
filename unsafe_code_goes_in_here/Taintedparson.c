@@ -22,9 +22,9 @@
 
 #define SIZEOF_TOKEN(a)       (sizeof(a) - 1)
 
-#define SKIP_CHAR(str)        ((str)++)
+#define SKIP_CHAR(str)        ((*str)++)
 
-#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(*str))) { SKIP_CHAR(str); }
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(*str))) { SKIP_CHAR(&str); }
 
 #define STARTING_CAPACITY 16
 
@@ -519,17 +519,17 @@ TJSON_Value * json_value_init_string_no_copy(char * string) {
     return new_value;
 }
 
- static JSON_Status skip_quotes(const char * string) {
-    if (*string != '\"') {
+ static JSON_Status skip_quotes(const char ** string) {
+    if (**string != '\"') {
         return JSONFailure;
     }
     SKIP_CHAR(string);
-    while (*string != '\"') {
-        if (*string == '\0') {
+    while (**string != '\"') {
+        if (**string == '\0') {
             return JSONFailure;
-        } else if (*string == '\\') {
+        } else if (**string == '\\') {
             SKIP_CHAR(string);
-            if (*string == '\0') {
+            if (**string == '\0') {
                 return JSONFailure;
             }
         }
@@ -581,8 +581,8 @@ char * processed) {
         return JSONFailure;
     }
     unprocessed_ptr += 3;
-    processed = (char *)processed_ptr;
-    unprocessed = (const char *)unprocessed_ptr;
+    strcpy(processed, processed_ptr);
+    strcpy(unprocessed, unprocessed_ptr);
     return JSONSuccess;
 }
 
@@ -590,14 +590,15 @@ char * get_quoted_string(const char * string,
 char * (*process_string)(const char * input,size_t len)) {
     
     // This way, string_start wont get modified it string_start gets
-    const char * string_start = malloc(strlen(string)*sizeof(char));
-    strncpy(string_start, string, strlen(string_start));
+    char * string_start = malloc(strlen(string)*sizeof(char) + 1);
+    strncpy(string_start, string, strlen(string));
+    string_start[strlen(string)+1] = '\0';
 
     size_t string_len = 0;
     /*
      * skip quotes is a mirror function
      */
-    JSON_Status status = skip_quotes((const char *)string);
+    JSON_Status status = skip_quotes(&string);
     if (status != JSONSuccess) {
         return NULL;
     }
@@ -608,6 +609,13 @@ char * (*process_string)(const char * input,size_t len)) {
         one_past_start = (const char *)string_start +1;
     }
     return (char *)process_string(one_past_start, string_len);
+}
+
+char** get_tainted_string_ref(char* input_string)
+{
+	char** temp = (char**)malloc(1*sizeof(char*));
+	*temp = input_string;
+	return temp;
 }
 
 TJSON_Value * parse_string_value(const char * string,
@@ -639,14 +647,17 @@ TJSON_Value * parse_boolean_value(const char * string) {
 }
 
 TJSON_Value * parse_number_value(const char * string) {
+    char* str_cpy = (char*)malloc(strlen(string)*sizeof(char));
+    strcpy(str_cpy,string);
     char * end = NULL;
     double number = 0;
     errno = 0;
-    number = strtod((char *)string, (char * *)&end);
+    number = strtod(str_cpy, (char * *)&end);
     if (errno || !is_decimal((char *)string, (size_t)(end - string))) {
         return NULL;
     }
-    string = (const char *)end;
+    str_cpy = (const char *)end;
+    strcpy(string, str_cpy);
     return json_value_init_number(number);
 }
 
@@ -1210,6 +1221,25 @@ return json_value_get_type_tainted(value) == JSONObject ? value->value.object : 
     array->count -= 1;
     return JSONSuccess;
 }
+
+ JSON_Status* json_array_remove_pecial(TJSON_Array * array, size_t ix) {
+    size_t to_move_bytes = 0;
+    int* ret_val = (int*)malloc(1*sizeof(int));
+    if (array == NULL || ix >= json_array_get_count(array)) {
+        *ret_val = JSONFailure;
+	return ret_val;
+    }
+    json_value_free(json_array_get_value(array, ix));
+    to_move_bytes = (json_array_get_count(array) - 1 - ix) * sizeof(TJSON_Value *);
+    // TODO: Unchecked because memmove doesn't yet take a type argument
+     {
+        memmove((void*)(array->items + ix), (void*)(array->items + ix + 1), to_move_bytes);
+    }
+    array->count -= 1;
+    *ret_val =  JSONSuccess;
+    return ret_val;
+}
+
 
  JSON_Status json_object_clear(TJSON_Object * object) {
     size_t i = 0;

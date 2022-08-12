@@ -53,7 +53,7 @@ JSON_Status       json_object_addn(TJSON_Object * object,
 TJSON_Value * json_value_init_string_no_copy(char * string);
 
 TJSON_Value * parse_number_value(const char * string);
-
+char** get_tainted_string_ref(char* input_string);
 TJSON_Value * parse_boolean_value(const char * string);
 
 TJSON_Value * parse_string_value(const char * string,

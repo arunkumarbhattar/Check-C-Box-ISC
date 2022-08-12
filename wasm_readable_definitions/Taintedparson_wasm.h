@@ -112,6 +112,7 @@ FUNC_EXPORT u32 w2c_parse_utf16_hex(wasm2c_sandbox_t* const, u32, u32);
 FUNC_EXPORT u32 w2c_hex_char_to_int(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_get_quoted_string(wasm2c_sandbox_t* const, u32, u32);
 FUNC_EXPORT u32 w2c_skip_quotes(wasm2c_sandbox_t* const, u32);
+FUNC_EXPORT u32 w2c_get_tainted_string_ref(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_parse_string_value(wasm2c_sandbox_t* const, u32, u32);
 FUNC_EXPORT u32 w2c_parse_boolean_value(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_json_value_init_boolean(wasm2c_sandbox_t* const, u32);
@@ -151,6 +152,7 @@ FUNC_EXPORT u32 w2c_json_serialize_to_file_pretty(wasm2c_sandbox_t* const, u32, 
 FUNC_EXPORT u32 w2c_json_serialize_to_string_pretty(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT void w2c_json_free_serialized_string(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_json_array_remove(wasm2c_sandbox_t* const, u32, u32);
+FUNC_EXPORT u32 w2c_json_array_remove_pecial(wasm2c_sandbox_t* const, u32, u32);
 FUNC_EXPORT u32 w2c_json_object_clear(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_malloc(wasm2c_sandbox_t* const, u32);
 FUNC_EXPORT u32 w2c_dlmalloc(wasm2c_sandbox_t* const, u32);
