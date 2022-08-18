@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "isc_lib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-isc_lib-Debug-c154a8b5bffae1eb9974.json",
+					"jsonFile" : "target-isc_lib-Debug-4a3ae1ce1d23dbd2737c.json",
 					"name" : "isc_lib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "isc_lib_final::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-isc_lib_final-Debug-a19e39f8968684f61165.json",
+					"jsonFile" : "target-isc_lib_final-Debug-f57c0ffe17fe85bf31be.json",
 					"name" : "isc_lib_final",
 					"projectIndex" : 0
 				}
@@ -58,8 +58,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug",
-		"source" : "/home/twinturbo/Desktop/Check-C-Box-ISC"
+		"build" : "/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug",
+		"source" : "/home/twinturbo/CLionProjects/Check-C-Box-ISC"
 	},
 	"version" : 
 	{

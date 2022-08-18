@@ -57,15 +57,15 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "/home/twinturbo/Desktop/Check-C-Box-ISC/wasm_readable_definitions"
+					"path" : "/home/twinturbo/CLionProjects/Check-C-Box-ISC/wasm_readable_definitions"
 				},
 				{
 					"backtrace" : 3,
-					"path" : "/home/twinturbo/Desktop/Check-C-Box-ISC/wasmrt"
+					"path" : "/home/twinturbo/CLionProjects/Check-C-Box-ISC/wasmrt"
 				},
 				{
 					"backtrace" : 2,
-					"path" : "/home/twinturbo/Desktop/Check-C-Box-ISC"
+					"path" : "/home/twinturbo/CLionProjects/Check-C-Box-ISC"
 				}
 			],
 			"language" : "C",

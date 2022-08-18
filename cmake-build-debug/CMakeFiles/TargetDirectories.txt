@@ -1,4 +1,4 @@
-/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib.dir
-/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib_final.dir
-/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib.dir
+/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/isc_lib_final.dir
+/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug/CMakeFiles/rebuild_cache.dir

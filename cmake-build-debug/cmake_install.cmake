@@ -1,4 +1,4 @@
-# Install script for directory: /home/twinturbo/Desktop/Check-C-Box-ISC
+# Install script for directory: /home/twinturbo/CLionProjects/Check-C-Box-ISC
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/twinturbo/Desktop/Check-C-Box-ISC/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/twinturbo/CLionProjects/Check-C-Box-ISC/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
