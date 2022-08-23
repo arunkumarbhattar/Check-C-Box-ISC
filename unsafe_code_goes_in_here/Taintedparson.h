@@ -26,39 +26,46 @@ enum json_result_t {
 };
 typedef int JSON_Status;
 
-
 typedef  struct json_object_t_t TJSON_Object;
 
 typedef  struct json_array_t_t  TJSON_Array;
 
 typedef  struct json_value_t_t  TJSON_Value;
 
- TJSON_Value *       parse_value(const char * string, size_t nesting);
+int verify_utf8_sequence(const unsigned char * s, int * len);
+JSON_Status       json_object_resize(TJSON_Object * object, size_t new_capacity);
 
- int verify_utf8_sequence(const unsigned char * s, int * len);
+char * get_quoted_string(const char * string,
+char * (*process_string)(const char * input,size_t len)); 
 
- JSON_Status       json_object_resize(TJSON_Object * object, size_t new_capacity);
+int  parse_utf16(const char * unprocessed ,
+char * processed);
 
- char * get_quoted_string(const char * string,
+JSON_Status json_object_remove_internal(TJSON_Object * object, const char * name, int free_value);
+
+JSON_Status       json_object_dotremove_internal(TJSON_Object * object, const char * name, int free_value);
+
+JSON_Status       json_object_addn(TJSON_Object * object,
+                                          const char * name ,
+                                          size_t name_len,
+                                          TJSON_Value * value);
+
+TJSON_Value * json_value_init_string_no_copy(char * string);
+
+TJSON_Value * parse_number_value(const char * string);
+char** get_tainted_string_ref(char* input_string);
+TJSON_Value * parse_boolean_value(const char * string);
+
+TJSON_Value * parse_string_value(const char * string,
 char * (*process_string)(const char * input,size_t len));
 
- int  parse_utf16(const char * unprocessed, char * processed);
+TJSON_Value * parse_number_value(const char * string);
 
- JSON_Status       json_object_remove_internal(TJSON_Object * object, const char * name, int free_value);
+TJSON_Value *       parse_value(const char * string, size_t nesting);
 
- JSON_Status       json_object_dotremove_internal(TJSON_Object * object, const char * name, int free_value);
+ static char * string_tainted_malloc(size_t sz);
 
- JSON_Status       json_object_addn(TJSON_Object * object,
-const char * name ,
-        size_t name_len,
-TJSON_Value * value);
-
-  TJSON_Value * parse_number_value(const char * string);
-
- TJSON_Value * parse_string_value(const char * string,
-char * (*process_string)(const char * input,size_t len));
-
- char * string_tainted_malloc(size_t sz);
+ TJSON_Value * json_parse_file(const char * filename);
 
  TJSON_Value * json_parse_file_with_comments(const char * filename,
 TJSON_Value * (*parse_value)(const char * ,size_t));

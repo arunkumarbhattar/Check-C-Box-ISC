@@ -2,7 +2,6 @@
  Please Do Not Directly Modify.
  */ 
 #include "Taintedparson.h"
-
 #define APPEND_INDENT(level) do { written = append_indent(buf, (level), buf_start, buf_len);\
                                   if (written < 0) { return -1; }\
                                   if (buf != NULL) { buf += written; }\
@@ -13,62 +12,36 @@
                                 if (buf != NULL) { buf += written; }\
                                 written_total += written; } while(0)
 
+#define FLOAT_FORMAT "%1.17g" /* do not increase precision without incresing NUM_BUF_SIZE */
+
 #define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+
 
 #define IS_NUMBER_INVALID(x) (((x) * 0.0) != 0.0)
 
 #define MAX(a, b)             ((a) > (b) ? (a) : (b))
 
-#define MAX_NESTING       1000
-
-#define STARTING_CAPACITY 16
-#define FLOAT_FORMAT "%1.17g" /* do not increase precision without incresing NUM_BUF_SIZE */
-#define NUM_BUF_SIZE 64 /* double printed with "%1.17g" shouldn't be longer than 25 bytes so let's be paranoid and use 64 */
-
 #define SIZEOF_TOKEN(a)       (sizeof(a) - 1)
 
-#define SKIP_CHAR(str)        ((str)++)
+#define SKIP_CHAR(str)        ((*str)++)
 
-#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(*str))) { SKIP_CHAR(str); }
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(*str))) { SKIP_CHAR(&str); }
+
+#define STARTING_CAPACITY 16
 
 #define parson_free_unchecked(t, buf) (free(buf))
+
+#define parson_malloc(t, sz) (malloc(sz))
 
 #define parson_tainted_free(t, p)   (free((t *)p))
 
 #define parson_tainted_malloc(t, sz) (malloc(sz))
 
-typedef struct B{
-    int B_a;
-    char* B_c;
-    char* k;
-    int* kkk;
-}BASE;
+#define NUM_BUF_SIZE 64 
 
-typedef struct Header{
-    int a;
-    char* k;
-    char*kk;
-    int* ttt;
-    BASE* b;
-    char* c;
+#define STARTING_CAPACITY 16
 
-}HEADER;
-
-HEADER* initializer(void)
-{
-	HEADER* HD;
-	HD->a = 100;
-	HD->b = (BASE*)malloc(sizeof(BASE));
-	HD->c = (char*)malloc(10*sizeof(char));
-	HD->kk = (char*)malloc(100*sizeof(char));
-	strcpy(HD->kk, "iwhfoweihfoihgnhfowhgowihgowhgro");
-	strcpy(HD->c, "Arunkumar B");
-	HD->b->B_a = 200;
-	HD->b->B_c = (char*)malloc(10*sizeof(char));
-	strcpy(HD->b->B_c, "Bhattar Arun Kumar");
-	return HD;	
-}
-
+#define FLOAT_FORMAT "%1.17g"
 typedef  struct json_value_value_t_t {
     char * string;
     double       number;
@@ -99,39 +72,87 @@ struct json_array_t_t {
     size_t       capacity;
 };
 
- int parson_escape_slashes = 1;
+typedef struct SuperNestedHeader{
+        char* brother_name;
+}SNHDD;
+
+typedef struct nestedHeader{
+        char* name;
+        SNHDD* super_nested;
+}NHDD;
+
+typedef struct Header{
+        int* twin_turbo;
+	char* name;
+        NHDD* nested;
+}HDD;
+
+HDD* experiment_2(HDD* hdd_val){
+
+    *(hdd_val->twin_turbo) = 100;
+    return hdd_val;
+}
+HDD* experiment_1(void){
+    HDD* hdd_val = (HDD*)malloc(sizeof(HDD));
+    hdd_val->twin_turbo = (int*)malloc(sizeof(int));
+    *(hdd_val->twin_turbo) = 982;
+    return hdd_val;
+}
+ static int parson_escape_slashes = 1;
 
  static char *    process_string(const char * input , size_t len);
 
- char * parson_string_tainted_malloc(size_t sz)  {
+ static char * parson_string_tainted_malloc(size_t sz)  {
   if(sz >= SIZE_MAX)
     return NULL;
   char * p  = (char *)malloc(sz + 1);
   if (p != NULL)
-    p[sz] = 0;
+    p[sz] = '\0';
   return (char *)p;
 }
+
+ static char * read_file(const char * filename);
 
  static void remove_comments(char * string, const char * start_token, const char * end_token);
 
  static int                 hex_char_to_int(char c);
 
- int                 is_decimal(const char * string , size_t length);
+ int verify_utf8_sequence(const unsigned char * s, int * len);
 
- TJSON_Object * json_object_init(TJSON_Value * wrapping_value);
+ static int                 is_decimal(const char * string , size_t length);
+
+ static TJSON_Object * json_object_init(TJSON_Value * wrapping_value);
+
+ JSON_Status       json_object_addn(TJSON_Object * object,
+                                          const char * name ,
+                                          size_t name_len,
+                                          TJSON_Value * value);
+
+JSON_Status       json_object_resize(TJSON_Object * object, size_t new_capacity);
 
  static TJSON_Value *      json_object_getn_value(const TJSON_Object * object, const char * name , size_t name_len);
 
- void              json_object_free(TJSON_Object * object);
+ JSON_Status       json_object_remove_internal(TJSON_Object * object, const char * name, int free_value);
+
+ JSON_Status       json_object_dotremove_internal(TJSON_Object * object, const char * name, int free_value);
+
+ static void              json_object_free(TJSON_Object * object);
 
  static void             json_array_free(TJSON_Array * array);
 
- TJSON_Value * parse_string_value(const char * string,
+ int  parse_utf16(const char * unprocessed, char * processed);
+
+char * get_quoted_string(const char * string,
 char * (*process_string)(const char * input,size_t len));
 
- int   json_serialize_to_buffer_r(const TJSON_Value * value, char * buf , int level, int is_pretty, char * num_buf, char * buf_start , size_t buf_len);
+TJSON_Value * parse_string_value(const char * string,
+char * (*process_string)(const char * input,size_t len));
 
- int            json_serialize_string(const char * string, char * buf , char * buf_start , size_t buf_len);
+TJSON_Value * parse_number_value(const char * string);
+
+ static int   json_serialize_to_buffer_r(const TJSON_Value * value, char * buf , int level, int is_pretty, char * num_buf, char * buf_start , size_t buf_len);
+
+ static int            json_serialize_string(const char * string, char * buf , char * buf_start , size_t buf_len);
 
 static int   append_indent(char * buf ,
                                     int level, char * buf_start , size_t buf_len);
@@ -139,7 +160,7 @@ static int   append_indent(char * buf ,
 static int   append_string(char * buf ,
 const char* string, char * buf_start , size_t buf_len);
 
- char * tainted_parson_strndup(const char * string , size_t n) {
+ static char * tainted_parson_strndup(const char * string , size_t n) {
     char * output_string  = parson_string_tainted_malloc(n);
     if (!output_string) {
         return NULL;
@@ -149,7 +170,7 @@ const char* string, char * buf_start , size_t buf_len);
     return output_string;
 }
 
- char * tainted_parson_strdup(const char * string) {
+ static char * tainted_parson_strdup(const char * string) {
     size_t len = strlen((const char *)string);
     const char * str_with_len  = NULL;
      {
@@ -200,7 +221,7 @@ const char* string, char * buf_start , size_t buf_len);
     return 0; /* won't happen */
 }
 
- int verify_utf8_sequence(const unsigned char * s, int * len) {
+int verify_utf8_sequence(const unsigned char * s, int * len) {
     unsigned int cp = 0;
     *len = num_bytes_in_utf8_sequence(s[0]);
     // TODO: Requires bounds widening, so left unchecked.
@@ -245,7 +266,7 @@ const char* string, char * buf_start , size_t buf_len);
     return 1;
 }
 
- int is_decimal(const char * string , size_t length) {
+ static int is_decimal(const char * string , size_t length) {
     if (length > 1 && string[0] == '0' && string[1] != '.') {
         return 0;
     }
@@ -261,37 +282,38 @@ const char* string, char * buf_start , size_t buf_len);
     return 1;
 }
 
- char * read_file(const char * filename) {
-void * fp = fopen(filename, "r");
-size_t size_to_read = 0;
-size_t size_read = 0;
-long pos;
-
-if (!fp) {
-return NULL;
-}
-fseek(fp, 0L, SEEK_END);
-pos = ftell(fp);
-if (pos < 0) {
-fclose(fp);
-return NULL;
-}
-size_to_read = pos;
-rewind(fp);
-// TODO: compiler isn't constant folding when checking bounds, so we need the spurious (size_t) 1 here.
-char * file_contents  = parson_string_tainted_malloc((size_t) 1 * size_to_read );
-if (!file_contents) {
-fclose(fp);
-return NULL;
-}
-size_read = fread(file_contents, 1, size_to_read, fp);
-if (size_read == 0 || ferror(fp)) {
-fclose(fp);
-parson_tainted_free(char, file_contents);
-return NULL;
-}
-fclose(fp);
-return file_contents;
+ static char * read_file(const char * filename) {
+    FILE * fp = fopen((const char *)filename, "r");
+    size_t size_to_read = 0;
+    size_t size_read = 0;
+    long pos;
+    
+    if (!fp) {
+        return NULL;
+    }
+    fseek(fp, 0L, SEEK_END);
+    pos = ftell(fp);
+    if (pos < 0) {
+        fclose(fp);
+        return NULL;
+    }
+    size_to_read = pos;
+    rewind(fp);
+    // TODO: compiler isn't constant folding when checking bounds, so we need the spurious (size_t) 1 here.
+    char * file_contents  = parson_string_tainted_malloc((size_t) 1 * size_to_read );
+    if (!file_contents) {
+    fclose(fp);
+        return NULL;
+    }
+    size_read = fread((void *)file_contents, 1, size_to_read, fp);
+    if (size_read == 0 || ferror(fp)) {
+        fclose(fp);
+        parson_tainted_free(char, file_contents);
+        return NULL;
+    }
+    fclose(fp);
+    file_contents[size_read] = '\0';
+    return file_contents;
 }
 
  static void remove_comments(char * string, const char * start_token, const char * end_token) {
@@ -336,7 +358,7 @@ return file_contents;
     }
 }
 
- TJSON_Object * json_object_init(TJSON_Value * wrapping_value_ip) {
+ static TJSON_Object * json_object_init(TJSON_Value * wrapping_value_ip) {
     TJSON_Object * new_obj = parson_tainted_malloc(TJSON_Object, sizeof(TJSON_Object));
     int * g = parson_tainted_malloc(int, sizeof(int));
     *g = 10;
@@ -351,7 +373,7 @@ return file_contents;
     return new_obj;
 }
 
- JSON_Status json_object_addn(TJSON_Object * object,
+JSON_Status json_object_addn(TJSON_Object * object,
                                     const char * name ,
                                     size_t name_len,
                                     TJSON_Value * value) {
@@ -379,7 +401,7 @@ return file_contents;
     return JSONSuccess;
 }
 
- JSON_Status json_object_resize(TJSON_Object * object, size_t new_capacity) {
+JSON_Status json_object_resize(TJSON_Object * object, size_t new_capacity) {
     if ((object->names == NULL && object->values != NULL) ||
         (object->names != NULL && object->values == NULL) ||
         new_capacity == 0) {
@@ -434,7 +456,7 @@ return file_contents;
     return NULL;
 }
 
- JSON_Status json_object_remove_internal(TJSON_Object * object, const char * name, int free_value) {
+JSON_Status json_object_remove_internal(TJSON_Object * object, const char * name, int free_value) {
     size_t i = 0, last_item_index = 0;
     if (object == NULL || json_object_get_value(object, name) == NULL) {
         return JSONFailure;
@@ -457,7 +479,7 @@ return file_contents;
     return JSONFailure; /* No execution path should end here */
 }
 
- JSON_Status json_object_dotremove_internal(TJSON_Object * object,
+JSON_Status json_object_dotremove_internal(TJSON_Object * object,
                                                   const char * name, int free_value) {
     TJSON_Value * temp_value = NULL;
     TJSON_Object * temp_object = NULL;
@@ -481,7 +503,7 @@ return file_contents;
     return json_object_dotremove_internal(temp_object, (const char *)after_dot, free_value);
 }
 
- void json_object_free(TJSON_Object * object) {
+ static void json_object_free(TJSON_Object * object) {
     size_t i;
     for (i = 0; i < object->count; i++) {
         parson_tainted_free(char, object->names[i]);
@@ -492,7 +514,7 @@ return file_contents;
     parson_tainted_free(TJSON_Object, object);
 }
 
- TJSON_Array * json_array_init(TJSON_Value * wrapping_value) {
+ static TJSON_Array * json_array_init(TJSON_Value * wrapping_value) {
     TJSON_Array * new_array = parson_tainted_malloc(TJSON_Array, sizeof(TJSON_Array));
     if (new_array == NULL) {
         return NULL;
@@ -513,7 +535,7 @@ return file_contents;
     parson_tainted_free(TJSON_Array, array);
 }
 
- TJSON_Value * json_value_init_string_no_copy(char * string) {
+TJSON_Value * json_value_init_string_no_copy(char * string) {
     TJSON_Value * new_value = (TJSON_Value *)parson_tainted_malloc(TJSON_Value, sizeof(TJSON_Value));
     if (!new_value) {
         return NULL;
@@ -524,17 +546,17 @@ return file_contents;
     return new_value;
 }
 
- static JSON_Status skip_quotes(const char * string) {
-    if (*string != '\"') {
+ static JSON_Status skip_quotes(const char ** string) {
+    if (**string != '\"') {
         return JSONFailure;
     }
     SKIP_CHAR(string);
-    while (*string != '\"') {
-        if (*string == '\0') {
+    while (**string != '\"') {
+        if (**string == '\0') {
             return JSONFailure;
-        } else if (*string == '\\') {
+        } else if (**string == '\\') {
             SKIP_CHAR(string);
-            if (*string == '\0') {
+            if (**string == '\0') {
                 return JSONFailure;
             }
         }
@@ -544,7 +566,7 @@ return file_contents;
     return JSONSuccess;
 }
 
- int  parse_utf16(const char * unprocessed ,
+int  parse_utf16(const char * unprocessed ,
 char * processed) {
     unsigned int cp, lead, trail;
     int parse_succeeded = 0;
@@ -586,20 +608,24 @@ char * processed) {
         return JSONFailure;
     }
     unprocessed_ptr += 3;
-    processed = (char *)processed_ptr;
-    unprocessed = (const char *)unprocessed_ptr;
+    strcpy(processed, processed_ptr);
+    strcpy(unprocessed, unprocessed_ptr);
     return JSONSuccess;
 }
 
- char * get_quoted_string(const char * string,
+char * get_quoted_string(const char * string,
 char * (*process_string)(const char * input,size_t len)) {
-    const char * string_start = string;
+    
+    // This way, string_start wont get modified it string_start gets
+    char * string_start = malloc(strlen(string)*sizeof(char) + 1);
+    strncpy(string_start, string, strlen(string));
+    string_start[strlen(string)+1] = '\0';
 
     size_t string_len = 0;
     /*
      * skip quotes is a mirror function
      */
-    JSON_Status status = skip_quotes((const char *)string);
+    JSON_Status status = skip_quotes(&string);
     if (status != JSONSuccess) {
         return NULL;
     }
@@ -612,7 +638,14 @@ char * (*process_string)(const char * input,size_t len)) {
     return (char *)process_string(one_past_start, string_len);
 }
 
- TJSON_Value * parse_string_value(const char * string,
+char** get_tainted_string_ref(char* input_string)
+{
+	char** temp = (char**)malloc(1*sizeof(char*));
+	*temp = input_string;
+	return temp;
+}
+
+TJSON_Value * parse_string_value(const char * string,
                                                       char * (*process_string)(const char * input,size_t len)) {
     TJSON_Value * value = NULL;
     char * new_string = get_quoted_string(string, process_string);
@@ -627,7 +660,7 @@ char * (*process_string)(const char * input,size_t len)) {
     return value;
 }
 
- TJSON_Value * parse_boolean_value(const char * string) {
+TJSON_Value * parse_boolean_value(const char * string) {
     size_t true_token_size = SIZEOF_TOKEN("true");
     size_t false_token_size = SIZEOF_TOKEN("false");
     if (strncmp("true", string, true_token_size) == 0) {
@@ -640,19 +673,22 @@ char * (*process_string)(const char * input,size_t len)) {
     return NULL;
 }
 
-  TJSON_Value * parse_number_value(const char * string) {
+TJSON_Value * parse_number_value(const char * string) {
+    char* str_cpy = (char*)malloc(strlen(string)*sizeof(char));
+    strcpy(str_cpy,string);
     char * end = NULL;
     double number = 0;
     errno = 0;
-    number = strtod((char *)string, (char * *)&end);
+    number = strtod(str_cpy, (char * *)&end);
     if (errno || !is_decimal((char *)string, (size_t)(end - string))) {
         return NULL;
     }
-    string = (const char *)end;
+    str_cpy = (const char *)end;
+    strcpy(string, str_cpy);
     return json_value_init_number(number);
 }
 
- int json_serialize_to_buffer_r(const TJSON_Value * value,
+ static int json_serialize_to_buffer_r(const TJSON_Value * value,
                                                char * buf ,
                                                int level,
                                                int is_pretty,
@@ -804,15 +840,7 @@ char * (*process_string)(const char * input,size_t len)) {
     }
 }
 
-char* simple_one(char* in)
-{
-    char* temp = (char*) malloc(100*sizeof(char));
-    in[1] = 'X';
-    strcpy(temp, in);
-    return temp;
-}
-
- int json_serialize_string(const char * str_unbounded,
+ static int json_serialize_string(const char * str_unbounded,
                                  char * buf ,
                                  char * buf_start ,
                                  size_t buf_len) {
@@ -1092,7 +1120,7 @@ return json_value_get_type_tainted(value) == JSONObject ? value->value.object : 
         return NULL;
     }
     new_value->parent = NULL;
-    new_value->type = JSONArray;
+    new_value->type = 6;
     new_value->value.array = json_array_init(new_value);
     if (!new_value->value.array) {
         parson_tainted_free(TJSON_Value, new_value);
@@ -1220,6 +1248,25 @@ return json_value_get_type_tainted(value) == JSONObject ? value->value.object : 
     array->count -= 1;
     return JSONSuccess;
 }
+
+ JSON_Status* json_array_remove_pecial(TJSON_Array * array, size_t ix) {
+    size_t to_move_bytes = 0;
+    int* ret_val = (int*)malloc(1*sizeof(int));
+    if (array == NULL || ix >= json_array_get_count(array)) {
+        *ret_val = JSONFailure;
+	return ret_val;
+    }
+    json_value_free(json_array_get_value(array, ix));
+    to_move_bytes = (json_array_get_count(array) - 1 - ix) * sizeof(TJSON_Value *);
+    // TODO: Unchecked because memmove doesn't yet take a type argument
+     {
+        memmove((void*)(array->items + ix), (void*)(array->items + ix + 1), to_move_bytes);
+    }
+    array->count -= 1;
+    *ret_val =  JSONSuccess;
+    return ret_val;
+}
+
 
  JSON_Status json_object_clear(TJSON_Object * object) {
     size_t i = 0;
